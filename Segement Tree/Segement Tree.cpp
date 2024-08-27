@@ -5,61 +5,66 @@ using namespace std;
 class SegmentTree
 {
 private:
-    vector<int> segment_tree;
+    int n;
+    vector<long long> arr;
+    vector<long long> tree;
+
+    void buildSegmentTree(int index, int left, int right)
+    {
+        if (left == right)
+        {
+            tree[index] = arr[left];
+            return;
+        }
+        int mid = (left + right) / 2;
+        buildSegmentTree(2 * index + 1, left, mid);
+        buildSegmentTree(2 * index + 2, mid + 1, right);
+        tree[index] = tree[2 * index + 1] + tree[2 * index + 2];
+    }
+
+    long long querySegmentTree(int arrayLeft, int arrayRight, int treeLeft, int treeRight, int treeIndex)
+    {
+        if (treeRight < arrayLeft || treeLeft > arrayRight)
+            return 0;
+        if (treeLeft >= arrayLeft && treeRight <= arrayRight)
+            return tree[treeIndex];
+        int mid = (treeLeft + treeRight) / 2;
+        long long left = querySegmentTree(arrayLeft, arrayRight, treeLeft, mid, 2 * treeIndex + 1);
+        long long right = querySegmentTree(arrayLeft, arrayRight, mid + 1, treeRight, 2 * treeIndex + 2);
+        return (left + right);
+    }
+
+    void updateSegmentTree(int arrayIndex, int newVal, int treeLeft, int treeRight, int treeIndex)
+    {
+        if (treeLeft == treeRight)
+        {
+            tree[treeIndex] = newVal;
+            return;
+        }
+        int mid = (treeLeft + treeRight) / 2;
+        if (mid >= arrayIndex)
+            updateSegmentTree(arrayIndex, newVal, treeLeft, mid, 2 * treeIndex + 1);
+        else
+            updateSegmentTree(arrayIndex, newVal, mid + 1, treeRight, 2 * treeIndex + 2);
+        tree[treeIndex] = tree[2 * treeIndex + 1] + tree[2 * treeIndex + 2];
+    }
 
 public:
-    SegmentTree(const vector<int> &nums)
+    SegmentTree(vector<long long> &nums)
     {
-        int seg_size = (4 * nums.size()) + 1;
-        segment_tree.resize(seg_size);
-        build(0, 0, nums.size() - 1, nums);
+        arr = nums;
+        n = arr.size();
+        tree.resize(4 * n);
+        buildSegmentTree(0, 0, n - 1);
     }
 
-    void build(int tree_index, int low, int high, const vector<int> &nums)
+    long long query(int left, int right)
     {
-        if (low == high)
-        {
-            segment_tree[tree_index] = nums[low];
-            return;
-        }
-        int mid = (low + high) / 2;
-        build(2 * tree_index + 1, low, mid, nums);
-        build(2 * tree_index + 2, mid + 1, high, nums);
-        segment_tree[tree_index] = segment_tree[2 * tree_index + 1] + segment_tree[2 * tree_index + 2];
+        return querySegmentTree(left, right, 0, n - 1, 0);
     }
 
-    int query(int tree_index, int tree_low, int tree_high, int query_low, int query_high)
+    void update(int index, int val)
     {
-        if (query_low > tree_high || query_high < tree_low)
-        {
-            return 0;
-        }
-        if (query_low >= tree_low && tree_high <= query_high)
-        {
-            return segment_tree[tree_index];
-        }
-        int mid = (tree_low + tree_high) / 2;
-        int left = query(2 * tree_index + 1, tree_low, mid, query_low, query_high);
-        int right = query(2 * tree_index + 2, mid + 1, tree_high, query_low, query_high);
-        return left + right;
-    }
-
-    void update(int tree_index, int tree_low, int tree_high, int query_index, int value)
-    {
-        if (tree_low == tree_high)
-        {
-            segment_tree[tree_index] = value;
-            return;
-        }
-        int mid = (tree_low + tree_high) / 2;
-        if (query_index <= mid)
-        {
-            update(2 * tree_index + 1, tree_low, mid, query_index, value);
-        }
-        else
-        {
-            update(2 * tree_index + 2, mid + 1, tree_high, query_index, value);
-        }
-        segment_tree[tree_index] = segment_tree[2 * tree_index + 1] + segment_tree[2 * tree_index + 2];
+        return updateSegmentTree(index, val, 0, n - 1, 0);
     }
 };
