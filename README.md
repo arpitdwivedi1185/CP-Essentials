@@ -30,7 +30,7 @@ Welcome to **CP-Essentials**, a collection of essential code palettes for compet
 To use any of the algorithms in your projects, clone the repository and copy the required code palette:
 
 ```bash
-git clone https://github.com/your-username/CP-Essentials.git
+git clone https://github.com/arpitdwivedi1185/CP-Essentials.git
 ```
 Navigate to the desired algorithm, and you'll find a well-structured, optimized solution for tackling competitive programming problems.
 
