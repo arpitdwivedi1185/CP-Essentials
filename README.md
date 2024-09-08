@@ -13,9 +13,6 @@ Welcome to **CP-Essentials**, a collection of essential code palettes for compet
 - **Square Root Decomposition**  
   Block decomposition approach for efficient range queries.
 
-- **Fenwick Tree (Binary Indexed Tree)**  
-  Data structure for point updates and prefix queries.
-
 - **Disjoint Set Union (Union-Find)**  
   Efficient structure for managing and merging disjoint sets.
 
